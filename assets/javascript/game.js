@@ -8,41 +8,46 @@ var characters = {
 	"porg":{
 		id: "porg",
 		name: "Porg",
-		bAttack: 5,
-		hp: 100,
-		cAttack: 10,
+		bAttack: 4,
+		hp: 150,
+		bHp: 150,
+		cAttack: 5,
 		selected: false
 	}, 
 	"luke":{
 		id: "luke",
 		name: "Luke Skywalker",
 		bAttack: 5,
-		hp: 100,
+		hp: 120,
+		bHp: 120,
 		cAttack: 10,
 		selected: false
 	}, 
 	"han":{
 		id: "han",
 		name: "Han Solo",
-		bAttack: 5,
-		hp: 100,
-		cAttack: 10,
+		bAttack: 6,
+		hp: 110,
+		bHp: 110,
+		cAttack: 15,
 		selected: false
 	}, 
 	"vader":{
 		id: "vader",
 		name: "Darth Vader",
-		bAttack: 5,
+		bAttack: 7,
 		hp: 100,
-		cAttack: 10,
+		bHp: 100,
+		cAttack: 20,
 		selected: false
 	}, 
 	"sidious":{
 		id: "sidious",
 		name: "Darth Sidious",
-		bAttack: 5,
-		hp: 100,
-		cAttack: 10,
+		bAttack: 8,
+		hp: 90,
+		bHp: 90,
+		cAttack: 25,
 		selected: false
 	}
 };
@@ -52,8 +57,10 @@ $(document).ready(function(){
 });
 
 function gameSetUp(){
-	$(".character").on("click", characterSelect);
+
+	gameReset();
 	$("#attack").on("click", damage);
+	$("#reset").on("click", gameReset);
 }
 
 function characterSelect(evt){
@@ -65,12 +72,14 @@ function characterSelect(evt){
 		player.selected = true;
 		attack = player.bAttack;
 		playerCard = card;
+		$(playerCard).addClass("player");
 		$("#player").append(playerCard);
 
 	} else if(defender == undefined && !characters[char].selected){
 		defender = characters[char];
 		defender.selected = true;
 		defenderCard = card;
+		$(defenderCard).addClass("defender");
 		$("#defender").append(defenderCard);
 	} else {
 
@@ -79,7 +88,7 @@ function characterSelect(evt){
 }
 
 function damage(){
-	if(player != undefined && defender != undefined){
+	if(player != undefined && defender != undefined && player.hp > 0){
 		defender.hp = defender.hp - attack;
 		$("#playerReadout").text(player.name + " attacks " + defender.name + " dealing " + attack + " damage!  " + player.name + "'s attack increases by " + player.bAttack + "!");
 		attack += player.bAttack;
@@ -116,5 +125,31 @@ function removeDefender(){
 }
 
 function gameLose(){
+	$("#defenderReadout").text(defender.name + " counter attacks, dealing " + defender.cAttack + " fatal damage to " + player.name +  "! " + player.name + " is defeated!");
+	$(playerCard).addClass("defeated");
+}
 
+function gameReset(){
+	$(".character").remove();
+	$("#playerReadout").text("");
+	$("#defenderReadout").text("");
+	player = undefined;
+	defender = undefined;
+	wins = 0;
+	
+	createCard("porg");
+	createCard("luke");
+	createCard("han");
+	createCard("vader");
+	createCard("sidious");
+	
+	$(".character").on("click", characterSelect);
+
+}
+
+function createCard(id){
+	var char = characters[id];
+	char.selected = false;
+	char.hp = char.bHp;
+	$("#characters").append("<div class='character' id='" + char.id + "'><div class='name'>" + char.name + "</div><img src='assets/images/" + char.id + ".jpg' height='100' width='100'><div class='hp'>" + char.hp + "</div></div>");
 }

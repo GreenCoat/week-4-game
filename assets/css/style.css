@@ -1,3 +1,43 @@
+body {
+	text-align: center;
+}
+
+button {
+	margin: 5px 0px;
+}
+
+#characters {
+	border: 2px solid black;
+	margin: 0px auto;
+	width: 80%;
+	min-width: 850px;
+	text-align: center;
+}
+
+#arena {
+	border: 2px solid black;
+	width: 200px;
+	margin: 10px auto;
+	text-align: center;
+}
+
 .character {
 	display: inline-block;
+	border: 1px solid green;
+	padding: 10px;
+	width: 120px;
+	margin: 10px;
+	text-align: center;
+}
+
+.player {
+	background: blue;
+}
+
+.defender {
+	background: green;
+}
+
+.defeated {
+	background: red;
 }

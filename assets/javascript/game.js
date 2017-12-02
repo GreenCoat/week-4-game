@@ -1,41 +1,49 @@
 var player;
+var playerCard;
 var attack;
 var defender;
+var defenderCard;
+var wins = 0;
 var characters = {
 	"porg":{
 		id: "porg",
 		name: "Porg",
 		bAttack: 5,
 		hp: 100,
-		cAttack: 10
+		cAttack: 10,
+		selected: false
 	}, 
 	"luke":{
 		id: "luke",
 		name: "Luke Skywalker",
 		bAttack: 5,
 		hp: 100,
-		cAttack: 10
+		cAttack: 10,
+		selected: false
 	}, 
 	"han":{
 		id: "han",
 		name: "Han Solo",
 		bAttack: 5,
 		hp: 100,
-		cAttack: 10
+		cAttack: 10,
+		selected: false
 	}, 
 	"vader":{
 		id: "vader",
 		name: "Darth Vader",
 		bAttack: 5,
 		hp: 100,
-		cAttack: 10
+		cAttack: 10,
+		selected: false
 	}, 
 	"sidious":{
 		id: "sidious",
 		name: "Darth Sidious",
 		bAttack: 5,
 		hp: 100,
-		cAttack: 10
+		cAttack: 10,
+		selected: false
 	}
 };
 
@@ -49,16 +57,21 @@ function gameSetUp(){
 }
 
 function characterSelect(evt){
+	var card = evt.currentTarget;
 	var char = evt.currentTarget.id;
 	
 	if(player == undefined){
 		player = characters[char];
+		player.selected = true;
 		attack = player.bAttack;
-		$("#player").append(evt.currentTarget);
+		playerCard = card;
+		$("#player").append(playerCard);
 
-	} else if(defender == undefined){
+	} else if(defender == undefined && !characters[char].selected){
 		defender = characters[char];
-		$("#defender").append(evt.currentTarget);
+		defender.selected = true;
+		defenderCard = card;
+		$("#defender").append(defenderCard);
 	} else {
 
 	};
@@ -76,13 +89,17 @@ function damage(){
 			player.hp = player.hp - defender.cAttack;
 			$("#defenderReadout").text(defender.name + " counter attacks, dealing " + defender.cAttack + " damage to " + player.name +  "!");
 			updateHp();
-			
+
 			if(player.hp <= 0){
 				gameLose();
 			}
+
 		} else {
-			$("#defenderReadout").text(defender.name + " is defeated! Please select a new challenger.");
-			defender = undefined;
+			removeDefender();
+			wins++;
+			if(wins == 4){
+				$("#defenderReadout").text(player.name + " has defeated all challengers! " + player.name + " is the champion!");
+			}
 		}
 	}
 }
@@ -90,6 +107,12 @@ function damage(){
 function updateHp(){
 	$("#" + defender.id + " .hp").text(defender.hp);
 	$("#" + player.id + " .hp").text(player.hp);
+}
+
+function removeDefender(){
+	$("#defenderReadout").text(defender.name + " is defeated! Please select a new challenger.");
+	$(defenderCard).remove();
+	defender = undefined;
 }
 
 function gameLose(){
